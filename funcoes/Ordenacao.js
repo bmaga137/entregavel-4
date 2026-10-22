@@ -1,23 +1,38 @@
 function quickSort(array) {
-    if (array.length <= 1) {
-        return array;
+    if (!Array.isArray(array)) {
+        throw new TypeError('A entrada deve ser um array.');
+    }
+    const ordenado = Array.from(array);
+    if (!ordenado.every((valor) => typeof valor === 'number')) {
+        throw new TypeError('Todos os elementos devem ser números.');
+    }
+    if (!ordenado.every(Number.isFinite)) {
+        throw new RangeError('Todos os elementos devem ser números finitos.');
     }
 
-    const pivot = array[array.length - 1];
-    const left = [];
-    const right = [];
+    const intervalos = [[0, ordenado.length - 1]];
+    while (intervalos.length > 0) {
+        const [inicio, fim] = intervalos.pop();
+        if (inicio >= fim) continue;
 
-    for (let i = 0; i < array.length - 1; i++) {
-        if (array[i] < pivot) {
-            left.push(array[i]);
-        } else {
-            right.push(array[i]);
+        const pivo = ordenado[Math.floor((inicio + fim) / 2)];
+        let esquerda = inicio;
+        let direita = fim;
+
+        while (esquerda <= direita) {
+            while (ordenado[esquerda] < pivo) esquerda++;
+            while (ordenado[direita] > pivo) direita--;
+            if (esquerda <= direita) {
+                [ordenado[esquerda], ordenado[direita]] = [ordenado[direita], ordenado[esquerda]];
+                esquerda++;
+                direita--;
+            }
         }
-    }
 
-    return [...quickSort(left), pivot, ...quickSort(right)];
+        if (inicio < direita) intervalos.push([inicio, direita]);
+        if (esquerda < fim) intervalos.push([esquerda, fim]);
+    }
+    return ordenado;
 }
 
-const numeros = [9, 4, 7, 2, 1, 8, 6, 3, 5];
-console.log("Array original:", numeros);
-console.log("Array ordenado:", quickSort(numeros));
+module.exports = { quickSort };

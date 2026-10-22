@@ -1,22 +1,34 @@
-const prompt = require('prompt-sync')();
+function isPrimo(numero) {
+    if (typeof numero !== 'number') {
+        throw new TypeError('O valor deve ser um número.');
+    }
+    if (!Number.isSafeInteger(numero)) {
+        throw new RangeError('O valor deve ser um inteiro seguro.');
+    }
 
-function isPrimo(n){
-    const numero = parseInt(prompt("Digite um número para verificar se é primo: "));
-    let divisores = 0;
-    for (let i = 1; i <= numero; i++){
-        if(numero%i == 0){
-            divisores++;
+    if (numero < 2) return false;
+    if (numero === 2) return true;
+    if (numero % 2 === 0) return false;
+
+    for (let divisor = 3; divisor <= Math.sqrt(numero); divisor += 2) {
+        if (numero % divisor === 0) return false;
+    }
+    return true;
+}
+
+if (require.main === module) {
+    const prompt = require('prompt-sync')();
+    try {
+        const entrada = prompt('Digite um número: ').trim();
+        if (!/^[+-]?\d+$/.test(entrada)) {
+            throw new TypeError('Digite um número inteiro válido.');
         }
-    }
-    if(divisores == 2){
-        console.log(`O número ${numero} é primo`);
-        return true;
-    }
-    else{
-        console.log(`O número ${numero} não é primo`);
-        return false
+        const numero = Number(entrada);
+        console.log(isPrimo(numero) ? `O número ${numero} é primo` : `O número ${numero} não é primo`);
+    } catch (erro) {
+        console.error(erro.message);
+        process.exitCode = 1;
     }
 }
 
-
-isPrimo();
+module.exports = { isPrimo };

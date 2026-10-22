@@ -1,42 +1,25 @@
-const prompt = require('prompt-sync')();
-
-/*function gerarSequenciaFibonacci() {
-    const numero = parseInt(prompt("Digite a quantidade de termos para a sequência de Fibonacci: "));
-
-    let sequencia = [0, 1];
-
-    if (numero > 1) {
-        for (let i = 2; i < numero; i++) {
-            sequencia[i] = sequencia[i - 1] + sequencia[i - 2];
-        }
-        console.log(sequencia);
-        return sequencia
-    }
-    else {
-        console.log("Inserir quantidade acima de 1")
-        return null;
-    }
-}*/
-
 function gerarSequenciaFibonacci(quantidade) {
-    const numero = quantidade;
+    if (typeof quantidade !== 'number') {
+        throw new TypeError('A quantidade deve ser um número.');
+    }
+    if (!Number.isSafeInteger(quantidade) || quantidade < 0) {
+        throw new RangeError('A quantidade deve ser um inteiro seguro não negativo.');
+    }
 
-    let sequencia = [0, 1];
-
-    if (numero > 1) {
-        for (let i = 2; i < numero; i++) {
-            sequencia[i] = sequencia[i - 1] + sequencia[i - 2];
+    const sequencia = [];
+    for (let indice = 0; indice < quantidade; indice++) {
+        if (indice < 2) {
+            sequencia.push(indice);
+            continue;
         }
-        console.log(sequencia);
-        return sequencia
+
+        const proximoTermo = sequencia[indice - 1] + sequencia[indice - 2];
+        if (!Number.isSafeInteger(proximoTermo)) {
+            throw new RangeError('A sequência excede o limite de inteiros seguros.');
+        }
+        sequencia.push(proximoTermo);
     }
-    else {
-        console.log("Inserir quantidade acima de 1")
-        return null;
-    }
+    return sequencia;
 }
-
-
-gerarSequenciaFibonacci(8);
 
 module.exports = { gerarSequenciaFibonacci };
